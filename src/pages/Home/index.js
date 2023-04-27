@@ -19,7 +19,7 @@ function Home(){
                 navigate('/admin', {replace: true})
             })
             .catch(() => {
-                console.log("Erro de login")
+                alert("Usuário não cadastrado ou credenciais inválidas!")
             })
 
         }else{

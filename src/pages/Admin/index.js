@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 
 import { auth, db } from '../../firebaseConnection'
 import { signOut } from 'firebase/auth';
-import { addDoc, collection, onSnapshot, query, orderBy, where } from 'firebase/firestore'
+import { addDoc, collection, onSnapshot, query, orderBy, where, doc, deleteDoc, updateDoc } from 'firebase/firestore'
 
 function Admin(){
 
@@ -11,6 +11,8 @@ function Admin(){
     const [user, setUser] = useState({})
 
     const [tarefas, setTarefas] = useState([])
+
+    const [edit, setEdit] = useState({})
  
     useEffect(() => {
         async function loadTarefas(){
@@ -47,6 +49,11 @@ function Admin(){
             return;
         }
 
+        if(edit?.id){
+            handleUpdateTarefa();
+            return;
+        }
+
         await addDoc(collection(db, 'tarefas'), {
             tarefa: tarefaInput,
             created: new Date(),
@@ -65,6 +72,33 @@ function Admin(){
         await signOut(auth)
     }
 
+    async function deleteTarefa(id){
+        const docRef = doc(db, "tarefas", id)
+        await deleteDoc(docRef)
+    }
+
+    async function editTarefa(item){
+        setTarefaInput(item.tarefa)
+        setEdit(item)
+    }
+
+    async function handleUpdateTarefa(){
+        const docRef = doc(db, 'tarefas', edit?.id)
+        await updateDoc(docRef, {
+            tarefa: tarefaInput
+        })
+        .then(() => {
+            console.log("Tarefa atualizada")
+            setTarefaInput('')
+            setEdit({})
+        })
+        .catch((error) => {
+            console.log("Erro ao atualizar" +error)
+            setTarefaInput('')
+            setEdit({})
+        })
+    }
+
     return(
         <div className='admin-container'>
             <h1>Minhas Tarefas</h1>
@@ -72,7 +106,11 @@ function Admin(){
                 <textarea placeholder='Digite sua tarefa...' value={tarefaInput}
                 onChange={(e) => setTarefaInput(e.target.value)}/>
 
-                <button className='btn-register' type='submit'>Registrar Tarefa</button>
+                {Object.keys(edit).length > 0 ? (
+                    <button className='btn-register' style={{ backgroundColor: '#6add39' }} type='submit'>Atualizar Tarefa</button>
+                ):(
+                    <button className='btn-register' type='submit'>Registrar Tarefa</button>
+                )}
             </form>
 
             {tarefas?.map((item) => (
@@ -81,8 +119,8 @@ function Admin(){
                     <p>{item.tarefa}</p>
 
                     <div>
-                        <button className='btn-editar'>Editar</button>
-                        <button className='btn-delete'>Concluir</button>
+                        <button onClick={ () => editTarefa(item) } className='btn-editar'>Editar</button>
+                        <button onClick={ () => deleteTarefa(item.id) } className='btn-delete'>Concluir</button>
                     </div>
 
                 </article>

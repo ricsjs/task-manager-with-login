@@ -37,7 +37,7 @@ function Register(){
             <form className='form' onSubmit={handleRegister}>
                 <input type='text' placeholder='Digite seu e-mail...' value={email} onChange={(e) => setEmail(e.target.value)}/>
 
-                <input type='text' placeholder='Digite sua senha...' value={password} onChange={(e) => setPassword(e.target.value)}/>
+                <input type='password' placeholder='Digite sua senha...' value={password} onChange={(e) => setPassword(e.target.value)}/>
 
                 <button type='submit'>Cadastrar</button>
             </form>

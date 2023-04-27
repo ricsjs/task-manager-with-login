@@ -40,7 +40,7 @@ function Home(){
             <form className='form' onSubmit={handleLogin}>
                 <input type='text' placeholder='Digite seu e-mail...' value={email} onChange={(e) => setEmail(e.target.value)}/>
 
-                <input type='text' placeholder='Digite sua senha...' value={password} onChange={(e) => setPassword(e.target.value)}/>
+                <input type='password' placeholder='Digite sua senha...' value={password} onChange={(e) => setPassword(e.target.value)}/>
 
                 <button type='submit'>Entrar</button>
             </form>
